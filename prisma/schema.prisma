@@ -5,11 +5,36 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model AirlineTicket {
+  id Int @id @default(autoincrement())
+  dataEmissao DateTime @default(now())
+  origem String
+  destino String
+  classe Classe
+  valor Float
+  costumerId Int
+  costumer Costumer @relation(fields: [costumerId], references: [id])
+}
+
+model Costumer {
+  id Int @id @default(autoincrement())
+  nome String
+  email String @unique
+  telefone String
+  tickets AirlineTicket[]
+}
+
+enum Classe {
+  ECONOMICA
+  EXECUTIVA
+  PRIMEIRA
 }
